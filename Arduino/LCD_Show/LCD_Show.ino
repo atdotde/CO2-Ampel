@@ -41,15 +41,17 @@ void setup()
     Serial.println(temperature);
 
     //Paint_Clear(WHITE);
-    sprintf(co2string, "%d PPM", ppm);
+    sprintf(co2string, "%d PPM ", ppm);
     Paint_DrawString_EN(0, 23, co2string, &Font24, BLUE, CYAN);
     //Paint_DrawRectangle(0, 45, 10, 59, WHITE,DRAW_FILL_EMPTY, DOT_PIXEL_1X1 );
     //Paint_DrawString_EN(0,45, "XXXX",  &Font24, BLACK, BLACK);
 
     if (ppm < 750)
-      Paint_DrawString_EN(0, 45, " OK ",  &Font24, GREEN, BLUE);
+      Paint_DrawString_EN(0, 45, " OK ", &Font24, GREEN, BLUE);
+    else if (ppm < 1000)
+      Paint_DrawString_EN(0, 45, "WARN", &Font24, YELLOW, BLUE);
     else
-      Paint_DrawString_EN(0, 45, "HIGH",  &Font24, RED, BLUE);
+      Paint_DrawString_EN(0, 45, "HIGH", &Font24, RED, BLUE);
 
     delay(1000);
     //    for (s[8] = 'a'; s[8] <= 'd'; s[8]++) {

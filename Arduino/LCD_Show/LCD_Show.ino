@@ -31,6 +31,7 @@ void setup()
 
   //  Paint_DrawImage(gImage_40X40,120, 0,40, 40);
   char co2string[100];
+  int x, y, color;
   while (1) {
     int ppm, temperature = 0;
 
@@ -46,12 +47,20 @@ void setup()
     //Paint_DrawRectangle(0, 45, 10, 59, WHITE,DRAW_FILL_EMPTY, DOT_PIXEL_1X1 );
     //Paint_DrawString_EN(0,45, "XXXX",  &Font24, BLACK, BLACK);
 
+    color = heatcolor(0x3f * (ppm - 400) / 600);
     if (ppm < 750)
       Paint_DrawString_EN(0, 45, " OK ", &Font24, GREEN, BLUE);
     else if (ppm < 1000)
       Paint_DrawString_EN(0, 45, "WARN", &Font24, YELLOW, BLUE);
-    else
+    else {
       Paint_DrawString_EN(0, 45, "HIGH", &Font24, RED, BLUE);
+       color = RED;
+    }
+    for (x = 0; x < 20; x++)
+      for (y = 0; y < 20; y++) {
+        LCD_SetCursor(x, y, x, y);
+        LCD_WriteData_Word(color);
+      }
 
     delay(1000);
     //    for (s[8] = 'a'; s[8] <= 'd'; s[8]++) {
@@ -149,6 +158,23 @@ byte getCheckSum(byte *packet) {
   checksum = 0xff - checksum;
   checksum += 1;
   return checksum;
+}
+
+// 5 bit rot, 6 bit gruen, 5 bit blau
+// max 31, 63, 31, daher fraction bis 63
+
+UWORD heatcolor(int f) {
+  UWORD c;
+
+  if (f > 0x3f)
+    f = 0x3f;
+
+  c = ((RED * (0x1f - f) / 0x1f) & RED) | ((f * GREEN / 0x3d) & GREEN);
+// u  c = (0x1F - (f / 2)) << 11 + f << 5;
+  Serial.println(f);
+  Serial.println(c);
+  return c;
+
 }
 
 

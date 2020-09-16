@@ -7,6 +7,8 @@
 SoftwareSerial co2Serial(2, 3); // define MH-Z19 RX TX
 
 void readSensor(int *ppm, int *temperature);
+void setautocalibration();
+void calibrate();
 
 void setup()
 {
@@ -29,6 +31,8 @@ void setup()
   //Paint_DrawLine(70, 10, 100, 40, MAGENTA, LINE_STYLE_SOLID, DOT_PIXEL_2X2);
   //Paint_DrawLine(100, 10, 70, 40, MAGENTA, LINE_STYLE_SOLID, DOT_PIXEL_2X2);
 
+
+  setautocalibration();
   //  Paint_DrawImage(gImage_40X40,120, 0,40, 40);
   char co2string[100];
   int x, y, color;
@@ -36,10 +40,10 @@ void setup()
     int ppm, temperature = 0;
 
     readSensor(&ppm, &temperature);
-    Serial.print("PPM: ");
-    Serial.print(ppm);
-    Serial.print(" Temperature: ");
-    Serial.println(temperature);
+//    Serial.print("PPM: ");
+    Serial.println(ppm);
+//    Serial.print(" Temperature: ");
+//    Serial.println(temperature);
 
     //Paint_Clear(WHITE);
     sprintf(co2string, "%d PPM ", ppm);
@@ -76,6 +80,18 @@ void setup()
 void loop()
 {
 
+}
+
+void setautocalibration() {
+  byte cmd[9] = {0xFF, 0x01, 0x79, 0xA0, 0x00, 0x00, 0x00, 0x00, 0xE6};
+
+  co2Serial.write(cmd, 9);
+}
+
+void calibrate() {
+  byte cmd[9] = {0xFF, 0x01, 0x87, 0xA0, 0x00, 0x00, 0x00, 0x00, 0x78};
+
+  co2Serial.write(cmd, 9);
 }
 
 // Die Funktion liest die CO2-Werte über die UART des
@@ -171,8 +187,8 @@ UWORD heatcolor(int f) {
 
   c = ((RED * (0x1f - f) / 0x1f) & RED) | ((f * GREEN / 0x3d) & GREEN);
 // u  c = (0x1F - (f / 2)) << 11 + f << 5;
-  Serial.println(f);
-  Serial.println(c);
+//  Serial.println(f);
+//  Serial.println(c);
   return c;
 
 }

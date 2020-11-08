@@ -44,7 +44,7 @@ void plot_digit(char c, int xc, sFONT* Font, UWORD Color_Foreground, UWORD Color
 
 void setup()
 {
-  Serial.begin(9600);
+  Serial.begin(115200);
 
   co2Serial.begin(9600);
 
